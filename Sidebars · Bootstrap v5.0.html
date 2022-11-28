@@ -124,16 +124,16 @@
   <script>
     var dataset1 = [33, 57, 84, 21, 60]
     
-    // var dataset1 = d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(data)
-    //             {
-    //                 for(var i = 0; i < data.length; i++)
-    //                 {
-    //                     console.log(data[i]);
-    //                     //console.log(data[i].Name);
-    //                     //console.log(data[i].Age);
-    //                 }
+    var dataset1 = d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(data)
+                {
+                    for(var i = 0; i < data.length; i++)
+                    {
+                        console.log(data[i]);
+                        //console.log(data[i].Name);
+                        //console.log(data[i].Age);
+                    }
 
-    //             });
+                });
 
     var svg = d3.select("#testing"),
                 margin = 200,
