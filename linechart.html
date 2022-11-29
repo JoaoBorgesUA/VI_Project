@@ -134,12 +134,11 @@
     
       // When reading the csv, I must format variables:
       function(d){
-        return { date : d3.timeParse("%b %d, %y")(d.Released), value : d.Rating }
+        return { date : d3.timeParse("%b %d, %Y")(d.Released), value : d.Rating }
       },
     
       // Now I can use this dataset:
       function(data) {
-        console.log(data)
         // Add X axis --> it is a date format
         var x = d3.scaleTime()
           .domain(d3.extent(data, function(d) { return d.date; }))
