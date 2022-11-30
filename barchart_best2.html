@@ -122,19 +122,16 @@
     <label for="cut">Cut:</label>
     <input type="number" id="cut" name="cut" value="12" />
 
-<!--   <button onclick="update(data1)">ASC Ratings</button>
-  <button onclick="update(data2)">ASC Maximum Installs</button>
-  <button onclick="update(data3)">DESC Ratings</button>
-  <button onclick="update(data4)">DESC Maximum Installs</button> -->
+
   <div id="my_dataviz"></div>
 <!-- Add 2 buttons -->
 
 </main>
 
 <script>
+  update()
 
-/* source.addEventListener('input', update);
-source.addEventListener('propertychange', inputHandler); */
+
 document.getElementById("cut").addEventListener("change", update);
 
 var data1 =[]
@@ -142,50 +139,6 @@ var data2 =[]
 var data3 =[]
 var data4 =[]
 
-
-/* d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
-      rows.forEach(function(r) {
-        if (+r['Rating']>0)
-        data1.push({
-            y: +r['Rating'],
-            Category: r.Category
-          })
-      });
-      sort('ascending',data1);
-});
-
-d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
-    rows.forEach(function(r) {
-        if (+r['Maximum Installs']>0)
-      data2.push({
-          y: +r['Maximum Installs'],
-          Category: r.Category
-        })
-    });
-    sort('ascending',data2);
-  });
-
-  d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
-      rows.forEach(function(r) {
-        if (+r['Rating']>0)
-          data3.push({
-              y: +r['Rating'],
-              Category: r.Category
-            })
-      });
-      sort('descending',data3);
-}); 
-
- d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
-    rows.forEach(function(r) {
-        if (+r['Maximum Installs']>0)
-      data4.push({
-          y: +r['Maximum Installs'],
-          Category: r.Category
-        })
-    });
-    sort('descending',data4);
-  }); */
   
 
   const bar_color = "#69b3a2";
@@ -215,158 +168,156 @@ var margin = {top: 30, right: 30, bottom: 70, left: 60},
       width = 1100 - margin.left - margin.right,
       height = 700 - margin.top - margin.bottom;
 
-//console.log(data2);
-//console.log(data3);
-//console.log(data4);
-  // append the svg object to the body of the page
-  var svg = d3.select("#my_dataviz")
-    .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-  
-  // X axis
-  var x = d3.scaleBand()
-    .range([ 0, width ])
-    .padding(0.2);
-  var xAxis = svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-  
-  // Initialize the Y axis
-  var y = d3.scaleLinear()
-    .range([ height, 0]);
-  var yAxis = svg.append("g")
-    .attr("class", "myYaxis")
-  
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// X axis
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .padding(0.2);
+var xAxis = svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+
+// Initialize the Y axis
+var y = d3.scaleLinear()
+  .range([ height, 0]);
+var yAxis = svg.append("g")
+  .attr("class", "myYaxis")
+
   // A function that create / update the plot for a given variable:
   function update() {
-
-    data = []
-
     data_type = document.getElementById("data").value
     sort_order = document.getElementById("sortOrder").value
     cut = document.getElementById("cut").value
-    console.log(data_type)
-    console.log(sort_order)
-    console.log(cut)
-    d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
-      dataset = []
-      dataset_sorted = []
-  
-        rows.forEach(function(r) {
+    for (let i = 0; i < 2; i++) {
+      data = []
 
-              if(r.Category in dataset ){
-                //console.log(dataset[r.Category])
-                dataset[r.Category].push(+r[data_type])
-              }
-              else{
-                dataset[r.Category] = [+r[data_type]]
-              }
-          })
-          //console.log(Object.keys(dataset));
-        //console.log(dataset)
-        Object.keys(dataset).forEach(function(a) {
-          //console.log(a);
-          if (data_type === "Rating"){
-            if(d3.mean(dataset[a]) > 0)
-              dataset_sorted.push({"Category": a, "y": d3.mean(dataset[a])})
+      console.log(data_type)
+      console.log(sort_order)
+      console.log(cut)
+      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
+        dataset = []
+        dataset_sorted = []
+    
+          rows.forEach(function(r) {
 
-          }
-          else{
-            if(d3.sum(dataset[a]) > 0)
-              dataset_sorted.push({"Category": a, "y": d3.sum(dataset[a])})
-          }
-        }) 
-        console.log(dataset_sorted)
-        
-        sort(sort_order, dataset_sorted);
+                if(r.Category in dataset ){
+                  //console.log(dataset[r.Category])
+                  dataset[r.Category].push(+r[data_type])
+                }
+                else{
+                  dataset[r.Category] = [+r[data_type]]
+                }
+            })
 
-          data = dataset_sorted.slice(0,cut)
+          Object.keys(dataset).forEach(function(a) {
 
+
+            if (data_type === "Rating"){
+              if(d3.mean(dataset[a]) > 0)
+                dataset_sorted.push({"Category": a, "y": d3.mean(dataset[a])})
+
+            }
+            else{
+              if(d3.sum(dataset[a]) > 0)
+                dataset_sorted.push({"Category": a, "y": d3.sum(dataset[a])})
+            }
+          }) 
+          //console.log(dataset_sorted)
           
+          sort(sort_order, dataset_sorted);
 
-                // X axis
-        x.domain(data.map(function(d) { return d.Category; }))
-        xAxis.transition().duration(1000).call(d3.axisBottom(x))
-    
-        // Add Y axis
-        y.domain([0, d3.max(data, function(d) { return +d.y }) ]);
-        yAxis.transition().duration(1000).call(d3.axisLeft(y));
+            data = dataset_sorted.slice(0,cut)
 
+            
 
-        const tooltip = d3.select("main")
-          .append("div")
-          .attr("class","d3-tooltip")
-          .style("position", "absolute")
-          .style("z-index", "10")
-          .style("visibility", "hidden")
-          .style("padding", "15px")
-          .style("background", "rgba(0,0,0,0.6)")
-          .style("border-radius", "5px")
-          .style("color", "#fff")
-          .text("a simple tooltip");
-    
-        // variable u: map data to existing bars
-        d3.selectAll("svg").transition().duration(1000)
-        .selectAll("rect")
-        .attr("height", 0)
-        .remove();
+                  // X axis
+          x.domain(data.map(function(d) { return d.Category; }))
+          xAxis.transition().duration(1000).call(d3.axisBottom(x))
+      
+          // Add Y axis
+          y.domain([0, d3.max(data, function(d) { return +d.y }) ]);
+          yAxis.transition().duration(1000).call(d3.axisLeft(y));
 
 
-        
-        var u = svg.selectAll("rect")
-          .data(data)
-          console.log(data_type)
+          const tooltip = d3.select("main")
+            .append("div")
+            .attr("class","d3-tooltip")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+            .style("padding", "15px")
+            .style("background", "rgba(0,0,0,0.6)")
+            .style("border-radius", "5px")
+            .style("color", "#fff")
+            .text("a simple tooltip");
+      
+          // variable u: map data to existing bars
+          d3.selectAll("svg").transition().duration(1000)
+          .selectAll("rect")
+          .attr("height", 0)
+          .remove();
+
           console.log(data)
 
-    
-        // update bars
+          
+          var u = svg.selectAll("rect")
+            .data(data)
+            console.log(data_type)
+            console.log(data)
 
-        u
-          .enter()
-          .append("rect")
-          .merge(u)
-          .attr("fill", bar_color)
+      
+          // update bars
 
-          u.transition().duration(1000)
-            .attr("width", x.bandwidth()) 
-            .attr("height", d => height - y(d.y) )
-            .attr("x", d => x(d.Category) )
-            .attr("y", d => y(d.y) )
+          u
+            .enter()
+            .append("rect")
+            .merge(u)
+            .attr("fill", bar_color)
 
-        u.on("mouseover", function(d)  {
-            tooltip.html(`${d.Category} : ${Math.round(d.y  * 100 )/100}`).style("visibility", "visible");
-            d3.select(this)
-              .attr("fill", shadeColor(bar_color, -15));
-          })
-          .on("mousemove", function(){
-            tooltip
-              .style("top", (event.pageY-10)+"px")
-              .style("left",(event.pageX+10)+"px");
-          })
-          .on("mouseout", function() {
-            tooltip.html(``).style("visibility", "hidden");
-            d3.select(this).attr("fill", bar_color);
-          })
-          ;
+            u.transition().duration(1000)
+              .attr("width", x.bandwidth()) 
+              .attr("height", d => height - y(d.y) )
+              .attr("x", d => x(d.Category) )
+              .attr("y", d => y(d.y) )
 
+            u.on("mouseover", function(d)  {
+              tooltip.html(`${d.Category} : ${Math.round(d.y  * 100 )/100}`).style("visibility", "visible");
+              d3.select(this)
+                .attr("fill", shadeColor(bar_color, -15));
+            })
+            .on("mousemove", function(){
+              tooltip
+                .style("top", (event.pageY-10)+"px")
+                .style("left",(event.pageX+10)+"px");
+            })
+            .on("mouseout", function() {
+              tooltip.html(``).style("visibility", "hidden");
+              d3.select(this).attr("fill", bar_color);
+            })
+            ;
 
-    });
-    
+        });
+      }
+        
         function sort(d3Comparator,data) {
           if(d3Comparator) 
           data = data.sort(function(a, b) {
               return d3[d3Comparator](a.y, b.y);
           });
-  }
+    }
+
   }
 
 
   
   // Initialize plot
-  update()
   
   </script>
     <script src="./Sidebars · Bootstrap v5.0_files/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
