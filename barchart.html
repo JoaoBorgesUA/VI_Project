@@ -134,7 +134,7 @@
     </div>
         
     <div class="row">
-      <div class="col">
+      <div class="col justify-content-center">
         <div id="my_dataviz"></div>
     </div>
   </div>
@@ -307,7 +307,7 @@ var yAxis = svg.append("g")
             u.on("mouseover", function(d)  {
               tooltip.html(`${d.Category} : ${Math.round(d.y  * 100 )/100}`).style("visibility", "visible");
               d3.select(this)
-                .attr("fill", shadeColor(bar_color, -15));
+                .attr("fill", shadeColor(bar_color, -30));
             })
             .on("mousemove", function(){
               tooltip
