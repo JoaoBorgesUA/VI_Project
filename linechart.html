@@ -128,20 +128,35 @@
       .append("g")
         .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
-    
+    dataset=[]
     //Read the data
-    d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt",
-    
+    d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt",function(rows){
+        dataset1=[]
+        dataset2=[]
       // When reading the csv, I must format variables:
-      function(d){
-        return { date : d3.timeParse("%b %d, %Y")(d.Released), value : d.Rating }
-      },
-    
+        
+        rows.forEach(function(r) {
+            if(r.Released!="")
+              dataset2.push(r.Released)
+          });
+
+          const counts = {};
+          dataset2.forEach(function (x) { 
+            counts[x] = (counts[x] || 0) + 1; 
+          });
+
+        Object.keys(counts).forEach(function(r){
+          dataset1.push({
+            date: d3.timeParse("%b %d, %Y")(r),
+            count:counts[r]
+          })
+        })
+
+        sort(dataset1)
       // Now I can use this dataset:
-      function(data) {
         // Add X axis --> it is a date format
         var x = d3.scaleTime()
-          .domain(d3.extent(data, function(d) { return d.date; }))
+          .domain(d3.extent(dataset1, function(d) { return d.date; }))
           .range([ 0, width ]);
         svg.append("g")
           .attr("transform", "translate(0," + height + ")")
@@ -149,23 +164,27 @@
     
         // Add Y axis
         var y = d3.scaleLinear()
-          .domain([0, d3.max(data, function(d) { return +d.value; })])
+          .domain([0, d3.max(dataset1, function(d) { return + d.count; })])
           .range([ height, 0 ]);
         svg.append("g")
           .call(d3.axisLeft(y));
     
         // Add the line
         svg.append("path")
-          .datum(data)
+          .datum(dataset1)
           .attr("fill", "none")
           .attr("stroke", "steelblue")
           .attr("stroke-width", 1.5)
           .attr("d", d3.line()
             .x(function(d) { return x(d.date) })
-            .y(function(d) { return y(d.value) })
+            .y(function(d) { return y(d.count) })
             )
     
     })
+
+    function sort(data) {
+      data.sort((a, b) => a.date - b.date);
+    }
     
     </script>
 
