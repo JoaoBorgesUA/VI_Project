@@ -154,7 +154,7 @@
               "translate(" + margin.left + "," + margin.top + ")");
     dataset=[]
     //Read the data
-    d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt",function(rows){
+    d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/5fe2ef495578f4cbd079c97a77116efc/raw/7ea929f4294c5f6a7983994ee3c1aa5a8b2d1732/gistfile1.txt",function(rows){
         dataset1=[]
         dataset2=[]
       // When reading the csv, I must format variables:
@@ -182,16 +182,16 @@
         var x = d3.scaleTime()
           .domain(d3.extent(dataset1, function(d) { return d.date; }))
           .range([ 0, width ]);
-        svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
+          xAxis = svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
     
         // Add Y axis
         var y = d3.scaleLinear()
           .domain([0, d3.max(dataset1, function(d) { return + d.count; })])
           .range([ height, 0 ]);
-        svg.append("g")
-          .call(d3.axisLeft(y));
+          yAxis = svg.append("g")
+            .call(d3.axisLeft(y));
     
 
         // var bisect = d3.bisector(function(d) { return d.x; }).left;
@@ -211,53 +211,80 @@
         //     .attr("text-anchor", "left")
         //     .attr("alignment-baseline", "middle")
 
-        // Add the line
-        svg.append("path")
-          .datum(dataset1)
-          .attr("fill", "none")
-          .attr("stroke", "steelblue")
-          .attr("stroke-width", 1.5)
+
+        var clip = svg.append("defs").append("svg:clipPath")
+            .attr("id", "clip")
+            .append("svg:rect")
+            .attr("width", width )
+            .attr("height", height )
+            .attr("x", 0)
+            .attr("y", 0);
+
+        var brush = d3.brushX()                   // Add the brush feature using the d3.brush function
+            .extent( [ [0,0], [width,height] ] )  // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+            .on("end", updateChart)               // Each time the brush selection changes, trigger the 'updateChart' function
+
+        var line = svg.append('g')
+            .attr("clip-path", "url(#clip)")
+
+        line.append("path")
+                .datum(dataset1)
+                .attr("class", "line")  // I add the class line to be able to modify this line later on.
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function(d) { return x(d.date) })
+                    .y(function(d) { return y(d.count) })
+                    )
+
+        line
+        .append("g")
+            .attr("class", "brush")
+            .call(brush);
+
+        var idleTimeout
+        function idled() { idleTimeout = null; }
+
+    // A function that update the chart for given boundaries
+    function updateChart() {
+
+        // What are the selected boundaries?
+        extent = d3.event.selection
+
+        // If no selection, back to initial coordinate. Otherwise, update X axis domain
+        if(!extent){
+          if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+          x.domain([ 4,8])
+        }else{
+          x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+          line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+        }
+
+        // Update axis and line position
+        xAxis.transition().duration(1000).call(d3.axisBottom(x))
+        line
+            .select('.line')
+            .transition()
+            .duration(1000)
+            .attr("d", d3.line()
+              .x(function(d) { return x(d.date) })
+              .y(function(d) { return y(d.count) })
+            )
+        }
+
+        // If user double click, reinitialize the chart
+        svg.on("dblclick",function(){
+        x.domain(d3.extent(dataset1, function(d) { return d.date; }))
+        xAxis.transition().call(d3.axisBottom(x))
+        line
+          .select('.line')
+          .transition()
           .attr("d", d3.line()
             .x(function(d) { return x(d.date) })
             .y(function(d) { return y(d.count) })
-            )
-    
-
-
-          // svg
-          //   .append('rect')
-          //   .style("fill", "none")
-          //   .style("pointer-events", "all")
-          //   .attr('width', width)
-          //   .attr('height', height)
-          //   .on('mouseover', mouseover)
-          //   .on('mousemove', mousemove)
-          //   .on('mouseout', mouseout);
-
-
-          // // What happens when the mouse move -> show the annotations at the right positions.
-          // function mouseover() {
-          //   focus.style("opacity", 1)
-          //   focusText.style("opacity",1)
-          // }
-
-          // function mousemove() {
-          //   // recover coordinate we need
-          //   var x0 = x.invert(d3.mouse(this)[0]);
-          //   var i = bisect(dataset1, x0, 1);
-          //   selectedData = dataset1[i]
-          //   focus
-          //     .attr("cx", x(selectedData.x))
-          //     .attr("cy", y(selectedData.y))
-          //   focusText
-          //     .html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-          //     .attr("x", x(selectedData.x)+15)
-          //     .attr("y", y(selectedData.y))
-          //   }
-          // function mouseout() {
-          //   focus.style("opacity", 0)
-          //   focusText.style("opacity", 0)
-          // }
+        )
+        });
     })
 
     function sort(data) {
