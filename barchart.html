@@ -115,7 +115,7 @@
       <div class="col">
         <select id="data" class="btn-toggle" onchange="update()">
           <option value="Rating" selected>Rating</option>
-          <option value="Maximum Installs">Maximum Installs</option>
+          <option value="Price">Price</option>
         </select>
       </div>
       <div class="col">
@@ -129,7 +129,7 @@
           <label class="form-label" for="cut">Cut</label>
       </div>
       <div class="col">
-        <input type="number" id="cut" class="form-control" value="12" max="42" />
+        <input type="number" id="cut" class="form-control" value="12" max="60" />
       </div>
     </div>
         
@@ -221,9 +221,10 @@ var yAxis = svg.append("g")
       d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
         dataset = []
         dataset_sorted = []
-    
+          console.log(rows)
           rows.forEach(function(r) {
 
+            if(+r[data_type]>0){
                 if(r.Category in dataset ){
                   //console.log(dataset[r.Category])
                   dataset[r.Category].push(+r[data_type])
@@ -231,12 +232,13 @@ var yAxis = svg.append("g")
                 else{
                   dataset[r.Category] = [+r[data_type]]
                 }
-            })
+            }
+          })
 
           Object.keys(dataset).forEach(function(a) {
 
-
-            if (data_type === "Rating"){
+            dataset_sorted.push({"Category": a, "y": d3.mean(dataset[a])})
+/*             if (data_type === "Rating"){
               if(d3.mean(dataset[a]) > 0)
                 dataset_sorted.push({"Category": a, "y": d3.mean(dataset[a])})
 
@@ -244,7 +246,7 @@ var yAxis = svg.append("g")
             else{
               if(d3.sum(dataset[a]) > 0)
                 dataset_sorted.push({"Category": a, "y": d3.sum(dataset[a])})
-            }
+            } */
           }) 
           //console.log(dataset_sorted)
           
