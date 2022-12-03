@@ -111,27 +111,64 @@
 
 
   <div class="container" style="padding-top: 8px;"> 
+    
     <div class="row">
-      <div class="col">
+      <div class="col justify-content-center" style="padding-top: 8px;">
+        <label class="form-check-label" for="data">Data: </label>
         <select id="data" class="btn-toggle" onchange="update()">
           <option value="Rating" selected>Rating</option>
           <option value="Price">Price</option>
         </select>
       </div>
-      <div class="col">
+      <div class="col justify-content-center" style="padding-top: 8px;">
+        <label class="form-check-label" for="sortOrder">Sort Order: </label>
         <select id="sortOrder" class="btn-toggle" onchange="update()">
           <option value="ascending" >Ascending</option>
           <option value="descending">Descending</option>
           <option value="" selected>None</option>
         </select>
       </div>
-      <div class="col text-right" style="padding-top: 8px;">
-          <label class="form-label" for="cut">Cut</label>
+      <div class="col justify-content-center" style="padding-top: 8px;">
+        <label class="form-check-label" for="Content Rating">Age Restriction: </label>
+        <select id="Content Rating" class="btn-toggle" onchange="update()">
+          <option value="Everyone" >Everyone</option>
+          <option value="Teen">Teen</option>
+          <option value="Mature 17+">Mature 17+</option>
+          <option value="" selected>None</option>
+        </select>
       </div>
-      <div class="col">
-        <input type="number" id="cut" class="form-control" value="12" max="60" />
-      </div>
+      <div class="col" style="padding-top: 8px; margin-right: 0px; padding-right: 0px;">
+        <div class="row ">
+          <input class="form-check-input" type="checkbox" value="" id="Free" >
+          <label class="form-check-label" for="Free">
+            Free
+          </label>
+        </div>
+
+        <div class="row">
+          <input class="form-check-input" type="checkbox" value="" id="Ad Supported" >
+          <label class="form-check-label" for="Ad Supported">
+            Ad Supported
+          </label>
+        </div>
+
+        <div class="row">
+          <input class="form-check-input" type="checkbox" value="" id="In App Purchases" >
+          <label class="form-check-label" for="In App Purchases">
+            In App Purchase
+          </label>
+        </div>
     </div>
+    </div>
+
+    <div class="row form-group">
+        <label class="col-sm-1 col-form-label" for="cut">Cut: </label>
+        <div class="col-sm-2">
+          <input type="number" id="cut" class="form-control" value="12" max="60" />
+        </div>
+
+    </div>
+      
         
     <div class="row">
       <div class="col justify-content-center">
@@ -150,6 +187,9 @@
 
 
 document.getElementById("cut").addEventListener("change", update);
+document.getElementById("Free").addEventListener("change", update);
+document.getElementById("Ad Supported").addEventListener("change", update);
+document.getElementById("In App Purchases").addEventListener("change", update); 
 
 var data1 =[]
 var data2 =[]
@@ -183,7 +223,7 @@ var data4 =[]
 // set the dimensions and margins of the graph
 var margin = {top: 30, right: 30, bottom: 70, left: 60},
       width = 1100 - margin.left - margin.right,
-      height = 700 - margin.top - margin.bottom;
+      height = 570 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 var svg = d3.select("#my_dataviz")
@@ -212,19 +252,41 @@ var yAxis = svg.append("g")
     data_type = document.getElementById("data").value
     sort_order = document.getElementById("sortOrder").value
     cut = document.getElementById("cut").value
+    age_rest = document.getElementById("Content Rating").value
+    free = document.getElementById("Free")
+    ad_supp = document.getElementById("Ad Supported")
+    app_purch = document.getElementById("In App Purchases")
+    console.log(data_type)
+    console.log(sort_order)
+    console.log(cut)
+    console.log(age_rest)
+/*     console.log(free)
+    console.log(ad_supp)
+    console.log(app_purch) */
     for (let i = 0; i < 2; i++) {
       data = []
 
-      console.log(data_type)
-      console.log(sort_order)
-      console.log(cut)
+
       d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
         dataset = []
         dataset_sorted = []
-          console.log(rows)
+        cont = {}
+          //console.log(rows)
           rows.forEach(function(r) {
+              if (r["Content Rating"] in cont){
+                cont[r["Content Rating"]] =  cont[r["Content Rating"]]+1
+              }
+              else{
+                cont[r["Content Rating"]]=1
 
-            if(+r[data_type]>0){
+              }
+            if(+r[data_type]>0 
+            && (age_rest === "" || r["Content Rating"] === age_rest) 
+            && ( (free.checked  && r["Free"] === "True" ) || ! free.checked) 
+            && ( (ad_supp.checked && r["Ad Supported"] === "True" ) || ! ad_supp.checked)
+            && ( ( app_purch.checked &&  r["In App Purchases"] === "True") || ! app_purch.checked) ){
+                console.log(r)
+
                 if(r.Category in dataset ){
                   //console.log(dataset[r.Category])
                   dataset[r.Category].push(+r[data_type])
@@ -234,21 +296,13 @@ var yAxis = svg.append("g")
                 }
             }
           })
-
+          //console.log(cont)
           Object.keys(dataset).forEach(function(a) {
 
             dataset_sorted.push({"Category": a, "y": d3.mean(dataset[a])})
-/*             if (data_type === "Rating"){
-              if(d3.mean(dataset[a]) > 0)
-                dataset_sorted.push({"Category": a, "y": d3.mean(dataset[a])})
-
-            }
-            else{
-              if(d3.sum(dataset[a]) > 0)
-                dataset_sorted.push({"Category": a, "y": d3.sum(dataset[a])})
-            } */
           }) 
-          //console.log(dataset_sorted)
+
+
           
           sort(sort_order, dataset_sorted);
 
