@@ -164,7 +164,7 @@
     <div class="row form-group">
         <label class="col-sm-1 col-form-label" for="cut">Cut: </label>
         <div class="col-sm-2">
-          <input type="number" id="cut" class="form-control" value="12" max="60" />
+          <input type="number" id="cut" class="form-control" value="12" />
         </div>
 
     </div>
@@ -256,18 +256,16 @@ var yAxis = svg.append("g")
     free = document.getElementById("Free")
     ad_supp = document.getElementById("Ad Supported")
     app_purch = document.getElementById("In App Purchases")
-    console.log(data_type)
-    console.log(sort_order)
-    console.log(cut)
-    console.log(age_rest)
-/*     console.log(free)
-    console.log(ad_supp)
-    console.log(app_purch) */
+    //console.log(data_type)        //--- Debug
+    //console.log(sort_order)       //--- Debug
+    //console.log(cut)              //--- Debug
+    //console.log(age_rest)         //--- Debug
+
     for (let i = 0; i < 2; i++) {
       data = []
 
 
-      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
+      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/93c5e816d565112446beb94b46483db9/raw/6acd7fd35e1ec83face11fe7972573cd352d932b/gistfile1.txt", function(error, rows) {
         dataset = []
         dataset_sorted = []
         cont = {}
@@ -285,7 +283,7 @@ var yAxis = svg.append("g")
             && ( (free.checked  && r["Free"] === "True" ) || ! free.checked) 
             && ( (ad_supp.checked && r["Ad Supported"] === "True" ) || ! ad_supp.checked)
             && ( ( app_purch.checked &&  r["In App Purchases"] === "True") || ! app_purch.checked) ){
-                console.log(r)
+                //console.log(r)    //--- Debug
 
                 if(r.Category in dataset ){
                   //console.log(dataset[r.Category])
@@ -337,13 +335,13 @@ var yAxis = svg.append("g")
           .attr("height", 0)
           .remove();
 
-          console.log(data)
+          //console.log(data)        //--- Debug
 
           
           var u = svg.selectAll("rect")
             .data(data)
-            console.log(data_type)
-            console.log(data)
+            //console.log(data_type)        //--- Debug
+            //console.log(data)       //--- Debug
 
       
           // update bars
