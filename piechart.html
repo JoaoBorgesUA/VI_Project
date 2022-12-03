@@ -33,6 +33,29 @@
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
         }
+        #tooltip {
+            position: absolute;
+            width: 200px;
+            height: auto;
+            padding: 10px;
+            background-color: white;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+            -mox-box-shadow: 4px 4px 4px 10px rgba(0, 0, 0, 0.4);
+            box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);
+            pointer-events: none;
+        }
+        #tooltip.hidden {
+            opacity: 0;
+        }
+        #tooltip p {
+            margin: 0;
+            font-family: sans-serif;
+            font-size: 16px;
+            line-height: 20px;
+        }
       }
     </style>
 
@@ -110,7 +133,12 @@
 
   <div class="b-example-divider"></div>
   <!-- Create a div where the graph will take place -->
-  <div id="my_dataviz"></div>
+  <div id="my_dataviz">
+    <div id="tooltip" style="opacity:0">
+      <p><span id="value">100</span></p>
+  </div>
+
+
   <script>
       // set the dimensions and margins of the graph
       var width = 700
@@ -131,16 +159,17 @@
       // Create dummy data
       d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/5fe2ef495578f4cbd079c97a77116efc/raw/7ea929f4294c5f6a7983994ee3c1aa5a8b2d1732/gistfile1.txt",function(data){
          dataset=[]
+         total=0
           data.forEach(function(r) {
             if(r["Minimum Android"]!="")
               dataset.push(r["Minimum Android"].split(" ")[0])
+              total+=1
           });
 
           const counts = {};
           dataset.forEach(function (x) { 
             counts[x] = (counts[x] || 0) + 1; 
           });
-          // set the color scale
           var color = d3.scaleOrdinal()
             .domain(counts)
             .range(d3.schemeSet2);
@@ -150,8 +179,6 @@
             .value(function(d) {return d.value; })
           var data_ready = pie(d3.entries(counts))
           // Now I know that group A goes from 0 degrees to x degrees and so on.
-
-          
 
           // shape helper to build arcs:
           var arcGenerator = d3.arc()
@@ -169,6 +196,19 @@
               .attr("stroke", "black")
               .style("stroke-width", "2px")
               .style("opacity", 0.7)
+              .on("mouseover", function (d) {
+                  d3.select("#tooltip")
+                      .style("left", d3.event.pageX + "px")
+                      .style("top", d3.event.pageY + "px")
+                      .style("opacity", 1)
+                      .select("#value")
+                      .html("Android Version: "+d.data.key+"<br> Percentage: "+Math.round((d.data.value/total)*10000)/100+"%<br> Amount of apps:"+d.data.value)
+              })
+              .on("mouseout", function () {
+                  // Hide the tooltip
+                  d3.select("#tooltip")
+                      .style("opacity", 0);;
+              });                                 
 
           // Now add the annotation. Use the centroid method to get the best coordinates
           svg
@@ -180,6 +220,7 @@
             .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
             .style("text-anchor", "middle")
             .style("font-size", 17)
+
       })
 
 
