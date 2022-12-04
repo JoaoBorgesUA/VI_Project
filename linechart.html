@@ -96,9 +96,10 @@
   <div class="b-example-divider"></div>
 
 <div class="container" style="padding-top:50px;"> 
-  <div class="row justify-content-center"  id="help" style="visibility: hidden;color: red;">
-    <p > <b>Double click to Zoom Out </b></p>
+  <div class="row justify-content-center"   >
+    <p > <b id="help">Select a Time Periodo to Zoom </b></p>
   </div>
+  
   <div class="row">
     <div class="col justify-content-center">
       <div id="my_dataviz"></div>
@@ -228,11 +229,13 @@
         if(!extent){
           if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
           x.domain([ 4,8])
-          document.getElementById("help").style.visibility="hidden";
+          document.getElementById("help").innerHTML="Select a Time Periodo to Zoom";
+          document.getElementById("help").style.color="black";
         }else{
           x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
           line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
-          document.getElementById("help").style.visibility="visible";
+          document.getElementById("help").innerHTML="Double Click to Zoom Out ";
+          document.getElementById("help").style.color="red";
         }
 
         // Update axis and line position
