@@ -90,30 +90,24 @@
           Pie Chart
         </a>
       </li>
-      <li>
-        <a href="./playground.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#playground"></use></svg>
-          Playground
-        </a>
-      </li>
     </ul>
     <hr>
-    <div class="dropdown">
-      <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://thumbs.dreamstime.com/b/user-icon-flat-style-isolated-white-background-website-logo-mobile-app-ui-human-symbol-man-silhouette-social-member-sign-135109471.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>User</strong>
-      </a>
-    </div>
   </div>
   <div class="b-example-divider"></div>
 
-          
-      <div class="row">
-        <div class="col justify-content-center">
-          <div id="my_dataviz"></div>
-      </div>
+<div class="container" style="padding-top:50px;"> 
+  <div class="row justify-content-center"  id="help" style="visibility: hidden;color: red;">
+    <p > <b>Double click to Zoom Out </b></p>
+  </div>
+  <div class="row">
+    <div class="col justify-content-center">
+      <div id="my_dataviz"></div>
     </div>
   </div>
+  <div class="row justify-content-center">
+    <p id="legend"><b> Number of Apps Released per date </b></p>
+  </div>
+</div>
   <!-- Create a div where the graph will take place -->
   <script>
 
@@ -234,9 +228,11 @@
         if(!extent){
           if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
           x.domain([ 4,8])
+          document.getElementById("help").style.visibility="hidden";
         }else{
           x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
           line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+          document.getElementById("help").style.visibility="visible";
         }
 
         // Update axis and line position
