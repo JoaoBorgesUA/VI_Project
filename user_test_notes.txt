@@ -1,0 +1,4 @@
+Change name of cut is ambigous 
+Add legend To the figures
+Add how to escape from line chart
+Add title to filters
