@@ -258,7 +258,6 @@ var yAxis = svg.append("g")
     //console.log(cut)              //--- Debug
     //console.log(age_rest)         //--- Debug
 
-    for (let i = 0; i < 2; i++) {
       data = []
 
 
@@ -326,6 +325,9 @@ var yAxis = svg.append("g")
             .style("color", "#fff")
             .text("a simple tooltip");
       
+
+          for (let i = 0; i < 2; i++) {
+
           // variable u: map data to existing bars
           d3.selectAll("svg").transition().duration(1000)
           .selectAll("rect")
@@ -370,9 +372,9 @@ var yAxis = svg.append("g")
               d3.select(this).attr("fill", bar_color);
             })
             ;
+          }
 
         });
-      }
         
         function sort(d3Comparator,data) {
           if(d3Comparator) 
