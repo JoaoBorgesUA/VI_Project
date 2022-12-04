@@ -90,20 +90,8 @@
           Pie Chart
         </a>
       </li>
-      <li>
-        <a href="./playground.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#playground"></use></svg>
-          Playground
-        </a>
-      </li>
     </ul>
     <hr>
-    <div class="dropdown">
-      <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://thumbs.dreamstime.com/b/user-icon-flat-style-isolated-white-background-website-logo-mobile-app-ui-human-symbol-man-silhouette-social-member-sign-135109471.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>User</strong>
-      </a>
-    </div>
   </div>
 
 
@@ -114,14 +102,14 @@
     
     <div class="row">
       <div class="col justify-content-center" style="padding-top: 8px;">
-        <label class="form-check-label" for="data">Data: </label>
+        <label class="form-check-label" for="data"><b>Select Data:</b> </label>
         <select id="data" class="btn-toggle" onchange="update()">
           <option value="Rating" selected>Rating</option>
           <option value="Price">Price</option>
         </select>
       </div>
       <div class="col justify-content-center" style="padding-top: 8px;">
-        <label class="form-check-label" for="sortOrder">Sort Order: </label>
+        <label class="form-check-label" for="sortOrder"><b>Sort Order:</b> </label>
         <select id="sortOrder" class="btn-toggle" onchange="update()">
           <option value="ascending" >Ascending</option>
           <option value="descending">Descending</option>
@@ -129,7 +117,7 @@
         </select>
       </div>
       <div class="col justify-content-center" style="padding-top: 8px;">
-        <label class="form-check-label" for="Content Rating">Age Restriction: </label>
+        <label class="form-check-label" for="Content Rating"><b>Age Restriction:</b> </label>
         <select id="Content Rating" class="btn-toggle" onchange="update()">
           <option value="Everyone" >Everyone</option>
           <option value="Teen">Teen</option>
@@ -138,6 +126,9 @@
         </select>
       </div>
       <div class="col" style="padding-top: 8px; margin-right: 0px; padding-right: 0px;">
+        <div class="row justify-content-left">
+          <p> <b>Filters:</b></p>
+        </div>
         <div class="row ">
           <input class="form-check-input" type="checkbox" value="" id="Free" >
           <label class="form-check-label" for="Free">
@@ -162,10 +153,11 @@
     </div>
 
     <div class="row form-group">
-        <label class="col-sm-1 col-form-label" for="cut">Cut: </label>
-        <div class="col-sm-2">
-          <input type="number" id="cut" class="form-control" value="12" max="60" />
+        <label class=" col-form-label" for="cut"><b> Show first </b></label>
+        <div class="col-sm-1">
+          <input type="number" id="cut" class="form-control" value="12" />
         </div>
+        <label class="col-sm-1 col-form-label" for="cut"> <b>elements </b></label>
 
     </div>
       
@@ -174,6 +166,9 @@
       <div class="col justify-content-center">
         <div id="my_dataviz"></div>
     </div>
+  </div>
+  <div class="row justify-content-center">
+    <p ><b id="legend"></b> </p>
   </div>
 </div>
 
@@ -256,18 +251,17 @@ var yAxis = svg.append("g")
     free = document.getElementById("Free")
     ad_supp = document.getElementById("Ad Supported")
     app_purch = document.getElementById("In App Purchases")
-    console.log(data_type)
-    console.log(sort_order)
-    console.log(cut)
-    console.log(age_rest)
-/*     console.log(free)
-    console.log(ad_supp)
-    console.log(app_purch) */
-    for (let i = 0; i < 2; i++) {
+
+    document.getElementById("legend").innerHTML=` Average App ${data_type} per Category`;
+    //console.log(data_type)        //--- Debug
+    //console.log(sort_order)       //--- Debug
+    //console.log(cut)              //--- Debug
+    //console.log(age_rest)         //--- Debug
+
       data = []
 
 
-      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/6473df7f4967b7324b13f4b2166aca03/raw/c47a684ae3dd69f5d3eb2317ad63234f4d4ab92c/gistfile1.txt", function(error, rows) {
+      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/93c5e816d565112446beb94b46483db9/raw/6acd7fd35e1ec83face11fe7972573cd352d932b/gistfile1.txt", function(error, rows) {
         dataset = []
         dataset_sorted = []
         cont = {}
@@ -285,7 +279,7 @@ var yAxis = svg.append("g")
             && ( (free.checked  && r["Free"] === "True" ) || ! free.checked) 
             && ( (ad_supp.checked && r["Ad Supported"] === "True" ) || ! ad_supp.checked)
             && ( ( app_purch.checked &&  r["In App Purchases"] === "True") || ! app_purch.checked) ){
-                console.log(r)
+                //console.log(r)    //--- Debug
 
                 if(r.Category in dataset ){
                   //console.log(dataset[r.Category])
@@ -331,19 +325,22 @@ var yAxis = svg.append("g")
             .style("color", "#fff")
             .text("a simple tooltip");
       
+
+          for (let i = 0; i < 2; i++) {
+
           // variable u: map data to existing bars
           d3.selectAll("svg").transition().duration(1000)
           .selectAll("rect")
           .attr("height", 0)
           .remove();
 
-          console.log(data)
+          //console.log(data)        //--- Debug
 
           
           var u = svg.selectAll("rect")
             .data(data)
-            console.log(data_type)
-            console.log(data)
+            //console.log(data_type)        //--- Debug
+            //console.log(data)       //--- Debug
 
       
           // update bars
@@ -375,9 +372,9 @@ var yAxis = svg.append("g")
               d3.select(this).attr("fill", bar_color);
             })
             ;
+          }
 
         });
-      }
         
         function sort(d3Comparator,data) {
           if(d3Comparator) 

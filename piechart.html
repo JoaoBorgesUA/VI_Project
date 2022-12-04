@@ -115,28 +115,28 @@
           Pie Chart
         </a>
       </li>
-      <li>
-        <a href="./playground.html" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#playground"></use></svg>
-          Playground
-        </a>
-      </li>
     </ul>
     <hr>
-    <div class="dropdown">
-      <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://thumbs.dreamstime.com/b/user-icon-flat-style-isolated-white-background-website-logo-mobile-app-ui-human-symbol-man-silhouette-social-member-sign-135109471.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>User</strong>
-      </a>
-    </div>
+
   </div>
 
   <div class="b-example-divider"></div>
   <!-- Create a div where the graph will take place -->
-  <div id="my_dataviz">
-    <div id="tooltip" style="opacity:0">
-      <p><span id="value">100</span></p>
+
+<div class="container"> 
+  <div class="row ">
+    <div class="col ">
+      <div id="my_dataviz" >
+        <div id="tooltip" style="opacity:0">
+          <p><span id="value">100</span></p>
+        </div>
+      </div>
+    </div>
   </div>
+  <div class="row" style="padding-left: 170px;">
+    <p id="legend"> <b> Minimum Android Version Supported by the Apps </b> </p>
+  </div>
+</div>
 
 
   <script>
@@ -157,7 +157,7 @@
           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
       // Create dummy data
-      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/5fe2ef495578f4cbd079c97a77116efc/raw/7ea929f4294c5f6a7983994ee3c1aa5a8b2d1732/gistfile1.txt",function(data){
+      d3.csv("https://gist.githubusercontent.com/JoaoBorgesUA/93c5e816d565112446beb94b46483db9/raw/6acd7fd35e1ec83face11fe7972573cd352d932b/gistfile1.txt",function(data){
          dataset=[]
          total=0
           data.forEach(function(r) {

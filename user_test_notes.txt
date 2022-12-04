@@ -1,0 +1,5 @@
+Change name of cut. It is ambigous 
+Add legend To the figures
+Add how to escape from line chart
+Add title to filters
+Pie graph legend is confusing ("Distribuction of the Minimum Android Version Supported") - however it is the best we got (no sujections to be better)
